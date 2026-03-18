@@ -14,6 +14,8 @@ enum Tokens {
     Exit,
     Dup,
     Pinodaniele,
+    Help,
+    Hi,
     Dump,
     EOF,
 }
@@ -86,11 +88,16 @@ public class Main {
                             return Tokens.Exit;
                         case "pinodaniele":
                             return Tokens.Pinodaniele;
+                        case "help":
+                            return Tokens.Help;
+                        case "hi":
+                            return Tokens.Hi;
                         default:
                             System.out.printf(
-                                "error: Unknown token: %s\n",
+                                "error: Unknown insturction: %s\n",
                                 comp.cur_val
                             );
+                            report_error();
                     }
                 }
         }
@@ -111,6 +118,7 @@ public class Main {
                         System.out.printf(
                             "error: '+' requires two numbers on the stack\n"
                         );
+                        report_error();
                     }
                     stack.push(stack.pop() + stack.pop());
                     break;
@@ -119,6 +127,7 @@ public class Main {
                         System.out.printf(
                             "error: '-' requires two numbers on the stack\n"
                         );
+                        report_error();
                     }
                     int b = stack.pop();
                     int a = stack.pop();
@@ -129,6 +138,7 @@ public class Main {
                         System.out.printf(
                             "error: '*' requires two numbers on the stack\n"
                         );
+                        report_error();
                     }
                     stack.push(stack.pop() * stack.pop());
                     break;
@@ -137,10 +147,12 @@ public class Main {
                         System.out.printf(
                             "error: '/' requires two numbers on the stack\n"
                         );
+                        report_error();
                     }
                     int c = stack.pop();
                     if (c == 0) {
                         System.out.printf("error: division by zero\n");
+                        report_error();
                     } else {
                         int d = stack.pop();
                         stack.push(d / c);
@@ -151,6 +163,7 @@ public class Main {
                         System.out.printf(
                             "error: '.' requires one number on the stack to print\n"
                         );
+                        report_error();
                     }
                     System.out.println("> " + stack.pop());
                     break;
@@ -159,6 +172,7 @@ public class Main {
                         System.out.printf(
                             "error: 'dup' requires one number on the stack du duplicate it\n"
                         );
+                        report_error();
                     }
                     stack.push(stack.peek());
                     break;
@@ -171,6 +185,15 @@ public class Main {
                     break;
                 case Pinodaniele:
                     easter_egg();
+                    break;
+                case Help:
+                    System.out.printf(
+                        "List of available commands:\n\tdump: prints all of the stack\n\tdup: duplicates the top of the stack\n\texit: exits the repl\n\thi: prints a nice message\n\tpinodaniele: type and find out\n"
+                    );
+                    break;
+                case Hi:
+                    System.out.printf("Hello from cianobatteri corp\n");
+                    greeting();
                     break;
             }
             comp.cur_tok = lexer(comp);
@@ -197,8 +220,10 @@ public class Main {
                 "                         ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     \n"
         );
 
+        System.out.println("Type help for the list of available commands");
+
         while (true) {
-            System.out.print("n lang shell: ");
+            System.out.print("n lang shell >> ");
             comp.src = input.nextLine();
             comp.i = 0;
             parser(comp);
@@ -209,7 +234,7 @@ public class Main {
         // --- Window + GIF ---
         JFrame frame = new JFrame("Gross king");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setSize(600, 400);
         ImageIcon gif = new ImageIcon("random/makesweet-zrxxeu.gif");
         JLabel label = new JLabel(gif);
         frame.add(label);
@@ -231,6 +256,36 @@ public class Main {
                     }
                 }
             );
+        } catch (Exception e) {
+            System.out.println(
+                "error: could not play sound: " + e.getMessage()
+            );
+        }
+    }
+
+    static void greeting() {
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(
+                new File("random/metal-pipe.wav")
+            );
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (Exception e) {
+            System.out.println(
+                "error: could not play sound: " + e.getMessage()
+            );
+        }
+    }
+
+    static void report_error() {
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(
+                new File("random/bird.wav")
+            );
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
         } catch (Exception e) {
             System.out.println(
                 "error: could not play sound: " + e.getMessage()
