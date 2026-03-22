@@ -3,7 +3,7 @@
 
 # n — a stack-based language
 
-**n** is a simple stack-based interpreted language written in Java, developed by Cianobatteri Corp.
+**n** is a simple stack-based interpreted language written in Java.
 
 </div>
 
